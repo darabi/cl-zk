@@ -6,20 +6,7 @@
 
 (cl:defpackage :zookeeper-cffi
   (:use :cffi)
-  (:nicknames)
-  (:export "-NEW"
-           "-CONSTRUCTOR"
-           "-OPERATOR-="
-           ".-29-NEW"
-           ".-29-CONSTRUCTOR"
-           "CLIENTID-T-OPERATOR-="
-           "ZOO-OP-NEW"
-           "ZOO-OP-CONSTRUCTOR"
-           "ZOO-OP-OPERATOR-="
-           "ZOO-OP-RESULT-NEW"
-           "ZOO-OP-RESULT-CONSTRUCTOR"
-           "ZOO-OP-RESULT-OPERATOR-="
-           "ZOO-SET-LOG-CALLBACK"
+  (:export "ZOO-SET-LOG-CALLBACK"
            "+ZOO-EPHEMERAL+"
            "ZOO-RECONFIG"
            "+ZOO-PERM-WRITE+"
@@ -124,7 +111,6 @@
            "ERR"
            "ZOO-OP-RESULT"
            "ZOO-OP-T"
-           ""
            "TYPE"
            "ZOO-OP"
            "ZOO-WGETCONFIG"
@@ -696,146 +682,3 @@
 
 (cffi:defcfun ("zoo_set_log_callback" zoo-set-log-callback) :void (zh :pointer)
                                                                   (callback log-callback-fn))
-
-(cffi:defcfun ("_ZN13zoo_op_resultaSERKS_" zoo-op-result-operator-=) zoo-op-result (this :pointer)
-                                                                                   (arg1 zoo-op-result))
-
-(cffi:defcfun ("_ZN13zoo_op_resultC1ERKS_" zoo-op-result-constructor) :void (this :pointer)
-                                                                            (arg1 zoo-op-result))
-
-(cl:defun zoo-op-result-new ()
-  (cl:let ((instance (cffi:foreign-alloc 'zoo-op-result)))
-    (zoo-op-result-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN13zoo_op_resultC1Ev" zoo-op-result-constructor) :void (this :pointer))
-
-(cl:defun zoo-op-result-new ()
-  (cl:let ((instance (cffi:foreign-alloc 'zoo-op-result)))
-    (zoo-op-result-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_opaSERKS_" zoo-op-operator-=) zoo-op (this :pointer) (arg1 zoo-op))
-
-(cffi:defcfun ("_ZN6zoo_opC1ERKS_" zoo-op-constructor) :void (this :pointer) (arg1 zoo-op))
-
-(cl:defun zoo-op-new ()
-  (cl:let ((instance (cffi:foreign-alloc 'zoo-op)))
-    (zoo-op-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_opC1Ev" zoo-op-constructor) :void (this :pointer))
-
-(cl:defun zoo-op-new ()
-  (cl:let ((instance (cffi:foreign-alloc 'zoo-op)))
-    (zoo-op-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN10clientid_taSERKS_" clientid-t-operator-=) clientid-t (this :pointer)
-                                                                          (arg1 clientid-t))
-
-(cffi:defcfun ("_ZN10clientid_tC1ERKS_" .-29-constructor) :void (this :pointer) (arg1 clientid-t))
-
-(cl:defun .-29-new ()
-  (cl:let ((instance (cffi:foreign-alloc 'clientid-t)))
-    (.-29-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN10clientid_tC1Ev" .-29-constructor) :void (this :pointer))
-
-(cl:defun .-29-new ()
-  (cl:let ((instance (cffi:foreign-alloc 'clientid-t)))
-    (.-29-constructor instance)
-    instance))
-;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C154DC3}>
-;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C155C43}>
-;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C156B03}>
-;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C157983}>
-
-(cffi:defcfun ("_ZN6zoo_op4._304._31aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C154DC3}>
- (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C154DC3}>
-))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._31C1ERKS1_" -constructor) :void (this :pointer)
-                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
-                                                                                                      <anonymous>
-                                                                                                      {100C154DC3}>
-))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._31C1Ev" -constructor) :void (this :pointer))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._32aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C155C43}>
- (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C155C43}>
-))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._32C1ERKS1_" -constructor) :void (this :pointer)
-                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
-                                                                                                      <anonymous>
-                                                                                                      {100C155C43}>
-))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._32C1Ev" -constructor) :void (this :pointer))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._33aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C156B03}>
- (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C156B03}>
-))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._33C1ERKS1_" -constructor) :void (this :pointer)
-                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
-                                                                                                      <anonymous>
-                                                                                                      {100C156B03}>
-))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._33C1Ev" -constructor) :void (this :pointer))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._34aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C157983}>
- (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C157983}>
-))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._34C1ERKS1_" -constructor) :void (this :pointer)
-                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
-                                                                                                      <anonymous>
-                                                                                                      {100C157983}>
-))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
-
-(cffi:defcfun ("_ZN6zoo_op4._304._34C1Ev" -constructor) :void (this :pointer))
-
-(cl:defun -new ()
-  (cl:let ((instance (cffi:foreign-alloc 'nil)))
-    (-constructor instance)
-    instance))
