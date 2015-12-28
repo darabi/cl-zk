@@ -6,7 +6,22 @@
 
 (cl:defpackage :zookeeper-cffi
   (:use :cffi)
-  (:export "+ZOO-EPHEMERAL+"
+  (:nicknames)
+  (:export "-NEW"
+           "-CONSTRUCTOR"
+           "-OPERATOR-="
+           ".-29-NEW"
+           ".-29-CONSTRUCTOR"
+           "CLIENTID-T-OPERATOR-="
+           "ZOO-OP-NEW"
+           "ZOO-OP-CONSTRUCTOR"
+           "ZOO-OP-OPERATOR-="
+           "ZOO-OP-RESULT-NEW"
+           "ZOO-OP-RESULT-CONSTRUCTOR"
+           "ZOO-OP-RESULT-OPERATOR-="
+           "ZOO-SET-LOG-CALLBACK"
+           "+ZOO-EPHEMERAL+"
+           "ZOO-RECONFIG"
            "+ZOO-PERM-WRITE+"
            "ZOO-STATE"
            "ZOO-AWGET"
@@ -20,6 +35,10 @@
            "ZOOKEEPER-INIT"
            "ZOO-SET-2"
            "ZOO-SET-OP-INIT"
+           "ZRWSERVERFOUND"
+           "ZNOWATCHER"
+           "ZEPHEMERALONLOCALSESSION"
+           "ZNOTREADONLY"
            "ZSESSIONMOVED"
            "ZNOTHING"
            "ZCLOSING"
@@ -34,6 +53,8 @@
            "ZNOAUTH"
            "ZNONODE"
            "ZAPIERROR"
+           "ZRECONFIGINPROGRESS"
+           "ZNEWCONFIGNOQUORUM"
            "ZINVALIDSTATE"
            "ZBADARGUMENTS"
            "ZOPERATIONTIMEOUT"
@@ -53,6 +74,7 @@
            "+ZOO-SEQUENCE+"
            "+ZOO-PERM-ALL+"
            "ZERROR"
+           "+ZOO-READONLY-STATE+"
            "ZOOKEEPER-GET-CONNECTED-HOST"
            "SOCKLEN-T"
            "SA-DATA"
@@ -68,25 +90,29 @@
            "+ZOO-PERM-READ+"
            "ZOOKEEPER-PROCESS"
            "ZOO-GET-CONTEXT"
+           "ZOO-REMOVE-WATCHERS"
+           "+ZOO-NOTCONNECTED-STATE+"
            "+ZOO-PERM-ADMIN+"
            "ZOO-SET-WATCHER"
            "ZOO-WEXISTS"
            "ZOO-DETERMINISTIC-CONN-ORDER"
            "ZOO-DELETE-OP-INIT"
+           "ZOO-AGETCONFIG"
            "ZOO-ANYONE-ID-UNSAFE"
            "ZOO-GET-CHILDREN-2"
+           "ZOO-CYCLE-NEXT-SERVER"
            "ZOO-CLIENT-ID"
-           "PASSWD"
-           "CLIENT-ID"
-           "CLIENTID-T"
+           "ZOO-GET-LOG-CALLBACK"
+           "ZOO-ACREATE-2"
+           "STRING-STAT-COMPLETION-T"
            "ZOO-CREATE-OP-INIT"
            "ZOO-AWGET-CHILDREN"
            "ZOO-SET"
+           "ZOO-ARECONFIG"
            "ZOO-GET-ACL"
            "+ZOOKEEPER-READ+"
            "ZOO-SET-CONTEXT"
            "ZOO-ASYNC"
-           "DATA-COMPLETION-T"
            "ZOO-DELETE"
            "ZOO-ADD-AUTH"
            "+ZOO-CONNECTING-STATE+"
@@ -98,8 +124,10 @@
            "ERR"
            "ZOO-OP-RESULT"
            "ZOO-OP-T"
+           ""
            "TYPE"
            "ZOO-OP"
+           "ZOO-WGETCONFIG"
            "+ZOO-EXPIRED-SESSION-STATE+"
            "ZOO-WGET-CHILDREN-2"
            "STRING-VECTOR"
@@ -108,6 +136,7 @@
            "ZOO-AGET-CHILDREN"
            "ZOO-ASET"
            "ZOO-RECV-TIMEOUT"
+           "ZOO-GET-CURRENT-SERVER"
            "ZOOKEEPER-INTEREST"
            "TV-USEC"
            "TV-SEC"
@@ -116,16 +145,18 @@
            "ZOO-AWEXISTS"
            "ZOO-AGET-CHILDREN-2"
            "STRINGS-STAT-COMPLETION-T"
-           "WATCHER-FN"
            "ZOO-SET-LOG-STREAM"
            "FILE"
            "SIZE-T"
            "+ZOO-CHANGED-EVENT+"
            "+ZOO-ASSOCIATING-STATE+"
            "+ZOO-SESSION-EVENT+"
+           "ZOO-SET-SERVERS"
            "STRINGS-COMPLETION-T"
            "ZOO-READ-ACL-UNSAFE"
            "ACL-COMPLETION-T"
+           "ZOO-AWGETCONFIG"
+           "DATA-COMPLETION-T"
            "ZOO-SET-DEBUG-LEVEL"
            "ZOO-LOG-LEVEL-DEBUG"
            "ZOO-LOG-LEVEL-INFO"
@@ -133,6 +164,10 @@
            "ZOO-LOG-LEVEL-ERROR"
            "ZOO-LOG-LEVEL"
            "ZOO-GET"
+           "STAT-COMPLETION-T"
+           "ZOO-CREATE-2"
+           "ZOO-CREATE"
+           "ZOO-GETCONFIG"
            "PZXID"
            "NUM-CHILDREN"
            "DATA-LENGTH"
@@ -145,15 +180,24 @@
            "MZXID"
            "CZXID"
            "STAT"
-           "INT-64-T"
-           "STAT-COMPLETION-T"
-           "ZOO-CREATE"
            "+ZOO-PERM-DELETE+"
            "IS-UNRECOVERABLE"
            "STRING-COMPLETION-T"
+           "ZOOKEEPER-INIT-2"
+           "PASSWD"
+           "CLIENT-ID"
+           "CLIENTID-T"
+           "INT-64-T"
+           "LOG-CALLBACK-FN"
            "+ZOO-NOTWATCHING-EVENT+"
            "ZOO-CREATOR-ALL-ACL"
            "ZOO-AUTH-IDS"
+           "ZOO-AREMOVE-WATCHERS"
+           "WATCHER-FN"
+           "ZWATCHERTYPE-ANY"
+           "ZWATCHERTYPE-DATA"
+           "ZWATCHERTYPE-CHILDREN"
+           "ZOO-WATCHER-TYPE"
            "ZOO-ASET-ACL"
            "VOID-COMPLETION-T"
            "DATA"
@@ -178,7 +222,7 @@
 (cffi:defcstruct _zhandle
   )
 
-(cffi::defctype zhandle-t (:struct _zhandle))
+(cffi::defctype zhandle-t _zhandle)
 
 (cffi::defctype int-32-t :int)
 
@@ -188,7 +232,7 @@
 
 (cffi:defcstruct acl
   (perms int-32-t)
-  (id (:struct id)))
+  (id id))
 
 (cffi:defcstruct acl-vector
   (count int-32-t)
@@ -200,25 +244,44 @@
                                                  (acl :pointer) (arg5 void-completion-t)
                                                  (data :pointer))
 
-(cffi:defcvar ("ZOO_AUTH_IDS" zoo-auth-ids) (:struct id))
+(cffi:defcenum zoo-watcher-type
+  (:zwatchertype-children 1)
+  (:zwatchertype-data 2)
+  (:zwatchertype-any 3))
 
-(cffi:defcvar ("ZOO_CREATOR_ALL_ACL" zoo-creator-all-acl) (:struct acl-vector))
+(cffi::defctype watcher-fn :pointer)
+
+(cffi:defcfun ("zoo_aremove_watchers" zoo-aremove-watchers) :int (zh :pointer) (path :pointer)
+                                                                 (wtype zoo-watcher-type)
+                                                                 (watcher watcher-fn)
+                                                                 (watcher-ctx (:pointer :void))
+                                                                 (local :int) (completion :pointer)
+                                                                 (data :pointer))
+
+(cffi:defcvar ("ZOO_AUTH_IDS" zoo-auth-ids) id)
+
+(cffi:defcvar ("ZOO_CREATOR_ALL_ACL" zoo-creator-all-acl) acl-vector)
 
 (cl:defconstant +zoo-notwatching-event+ cl:nil)
+
+(cffi::defctype log-callback-fn :pointer)
+
+(cffi::defctype int-64-t :long)
+
+(cffi:defcstruct clientid-t
+  (client-id int-64-t)
+  (passwd :char :count 16))
+
+(cffi:defcfun ("zookeeper_init2" zookeeper-init-2) :pointer (host :pointer) (fn watcher-fn)
+                                                            (recv-timeout :int) (clientid :pointer)
+                                                            (context (:pointer :void)) (flags :int)
+                                                            (log-callback log-callback-fn))
 
 (cffi::defctype string-completion-t :pointer)
 
 (cffi:defcfun ("is_unrecoverable" is-unrecoverable) :int (zh :pointer))
 
 (cl:defconstant +zoo-perm-delete+ cl:nil)
-
-(cffi:defcfun ("zoo_create" zoo-create) :int (zh :pointer) (path :pointer) (value :pointer)
-                                             (valuelen :int) (acl :pointer) (flags :int)
-                                             (path-buffer (:pointer :char)) (path-buffer-len :int))
-
-(cffi::defctype stat-completion-t :pointer)
-
-(cffi::defctype int-64-t :long)
 
 (cffi:defcstruct stat
   (czxid int-64-t)
@@ -233,6 +296,21 @@
   (num-children int-32-t)
   (pzxid int-64-t))
 
+(cffi:defcfun ("zoo_getconfig" zoo-getconfig) :int (zh :pointer) (watch :int)
+                                                   (buffer (:pointer :char))
+                                                   (buffer-len (:pointer :int)) (stat :pointer))
+
+(cffi:defcfun ("zoo_create" zoo-create) :int (zh :pointer) (path :pointer) (value :pointer)
+                                             (valuelen :int) (acl :pointer) (flags :int)
+                                             (path-buffer (:pointer :char)) (path-buffer-len :int))
+
+(cffi:defcfun ("zoo_create2" zoo-create-2) :int (zh :pointer) (path :pointer) (value :pointer)
+                                                (valuelen :int) (acl :pointer) (flags :int)
+                                                (path-buffer (:pointer :char))
+                                                (path-buffer-len :int) (stat :pointer))
+
+(cffi::defctype stat-completion-t :pointer)
+
 (cffi:defcfun ("zoo_get" zoo-get) :int (zh :pointer) (path :pointer) (watch :int)
                                        (buffer (:pointer :char)) (buffer-len (:pointer :int))
                                        (stat :pointer))
@@ -245,11 +323,20 @@
 
 (cffi:defcfun ("zoo_set_debug_level" zoo-set-debug-level) :void (log-level zoo-log-level))
 
+(cffi::defctype data-completion-t :pointer)
+
+(cffi:defcfun ("zoo_awgetconfig" zoo-awgetconfig) :int (zh :pointer) (watcher watcher-fn)
+                                                       (watcher-ctx (:pointer :void))
+                                                       (completion data-completion-t)
+                                                       (data :pointer))
+
 (cffi::defctype acl-completion-t :pointer)
 
-(cffi:defcvar ("ZOO_READ_ACL_UNSAFE" zoo-read-acl-unsafe) (:struct acl-vector))
+(cffi:defcvar ("ZOO_READ_ACL_UNSAFE" zoo-read-acl-unsafe) acl-vector)
 
 (cffi::defctype strings-completion-t :pointer)
+
+(cffi:defcfun ("zoo_set_servers" zoo-set-servers) :int (zh :pointer) (hosts :pointer))
 
 (cl:defconstant +zoo-session-event+ cl:nil)
 
@@ -301,11 +388,9 @@
   (_mode :int)
   (_unused-2 :char :count 20))
 
-(cffi::defctype file (:struct _io-file))
+(cffi::defctype file _io-file)
 
 (cffi:defcfun ("zoo_set_log_stream" zoo-set-log-stream) :void (log-stream :pointer))
-
-(cffi::defctype watcher-fn :pointer)
 
 (cffi::defctype strings-stat-completion-t :pointer)
 
@@ -331,6 +416,8 @@
 (cffi:defcfun ("zookeeper_interest" zookeeper-interest) :int (zh :pointer) (fd (:pointer :int))
                                                              (interest (:pointer :int))
                                                              (tv :pointer))
+
+(cffi:defcfun ("zoo_get_current_server" zoo-get-current-server) :pointer (zh :pointer))
 
 (cffi:defcfun ("zoo_recv_timeout" zoo-recv-timeout) :int (zh :pointer))
 
@@ -360,38 +447,18 @@
 
 (cl:defconstant +zoo-expired-session-state+ cl:nil)
 
-
-;; START of manual correction
-
-;; TODO: the union inside the zoo-op struct (defined in zookeeper.h)
-;; was not processed correctly by Verrazano. Do we need it?  Two of
-;; the operations (create-op and delete-op) and the union
-;; zoo-operation are declared here, manually:
-
-(cffi:defcstruct create-op
-  (path :pointer)
-  (data :pointer)
-  (datalen :int)
-  (buf :pointer)
-  (buflen :int)
-  (acl (:struct acl-vector))
-  (flags :int))
-
-(cffi:defcstruct delete-op
-  (path :pointer)
-  (version :int))
-
-(cffi:defcunion zoo-operation
-  (create-op (:struct create-op))
-  (delete-op (:struct delete-op)))
+(cffi:defcfun ("zoo_wgetconfig" zoo-wgetconfig) :int (zh :pointer) (watcher watcher-fn)
+                                                     (watcher-ctx (:pointer :void))
+                                                     (buffer (:pointer :char))
+                                                     (buffer-len (:pointer :int)) (stat :pointer))
+;;; Skipping anonymous composite type #<UNION <anonymous> {100BF63613}>
 
 (cffi:defcstruct zoo-op
   (type :int)
-  (op (:union zoo-operation)))
+  ( ;;; Skipping anonymous type #<UNION <anonymous> {100BF63613}>
+  ))
 
-;; END of manual code
-
-(cffi::defctype zoo-op-t (:struct zoo-op))
+(cffi::defctype zoo-op-t zoo-op)
 
 (cffi:defcstruct zoo-op-result
   (err :int)
@@ -399,7 +466,7 @@
   (valuelen :int)
   (stat :pointer))
 
-(cffi::defctype zoo-op-result-t (:struct zoo-op-result))
+(cffi::defctype zoo-op-result-t zoo-op-result)
 
 (cffi:defcfun ("zoo_amulti" zoo-amulti) :int (zh :pointer) (count :int) (ops :pointer)
                                              (results :pointer) (arg5 void-completion-t)
@@ -419,8 +486,6 @@
 
 (cffi:defcfun ("zoo_delete" zoo-delete) :int (zh :pointer) (path :pointer) (version :int))
 
-(cffi::defctype data-completion-t :pointer)
-
 (cffi:defcfun ("zoo_async" zoo-async) :int (zh :pointer) (path :pointer)
                                            (completion string-completion-t) (data :pointer))
 
@@ -430,6 +495,11 @@
 
 (cffi:defcfun ("zoo_get_acl" zoo-get-acl) :int (zh :pointer) (path :pointer) (acl :pointer)
                                                (stat :pointer))
+
+(cffi:defcfun ("zoo_areconfig" zoo-areconfig) :int (zh :pointer) (joining :pointer)
+                                                   (leaving :pointer) (members :pointer)
+                                                   (version int-64-t) (dc data-completion-t)
+                                                   (data :pointer))
 
 (cffi:defcfun ("zoo_set" zoo-set) :int (zh :pointer) (path :pointer) (buffer :pointer) (buflen :int)
                                        (version :int))
@@ -446,17 +516,27 @@
                                                               (path-buffer (:pointer :char))
                                                               (path-buffer-len :int))
 
-(cffi:defcstruct clientid-t
-  (client-id int-64-t)
-  (passwd :char :count 16))
+(cffi::defctype string-stat-completion-t :pointer)
+
+(cffi:defcfun ("zoo_acreate2" zoo-acreate-2) :int (zh :pointer) (path :pointer) (value :pointer)
+                                                  (valuelen :int) (acl :pointer) (flags :int)
+                                                  (completion string-stat-completion-t)
+                                                  (data :pointer))
+
+(cffi:defcfun ("zoo_get_log_callback" zoo-get-log-callback) log-callback-fn (zh :pointer))
 
 (cffi:defcfun ("zoo_client_id" zoo-client-id) :pointer (zh :pointer))
+
+(cffi:defcfun ("zoo_cycle_next_server" zoo-cycle-next-server) :void (zh :pointer))
 
 (cffi:defcfun ("zoo_get_children2" zoo-get-children-2) :int (zh :pointer) (path :pointer)
                                                             (watch :int) (strings :pointer)
                                                             (stat :pointer))
 
-(cffi:defcvar ("ZOO_ANYONE_ID_UNSAFE" zoo-anyone-id-unsafe) (:struct id))
+(cffi:defcvar ("ZOO_ANYONE_ID_UNSAFE" zoo-anyone-id-unsafe) id)
+
+(cffi:defcfun ("zoo_agetconfig" zoo-agetconfig) :int (zh :pointer) (watch :int)
+                                                     (completion data-completion-t) (data :pointer))
 
 (cffi:defcfun ("zoo_delete_op_init" zoo-delete-op-init) :void (op :pointer) (path :pointer)
                                                               (version :int))
@@ -470,6 +550,14 @@
 
 (cl:defconstant +zoo-perm-admin+ cl:nil)
 
+(cl:defconstant +zoo-notconnected-state+ cl:nil)
+
+(cffi:defcfun ("zoo_remove_watchers" zoo-remove-watchers) :int (zh :pointer) (path :pointer)
+                                                               (wtype zoo-watcher-type)
+                                                               (watcher watcher-fn)
+                                                               (watcher-ctx (:pointer :void))
+                                                               (local :int))
+
 (cffi:defcfun ("zoo_get_context" zoo-get-context) :pointer (zh :pointer))
 
 (cffi:defcfun ("zookeeper_process" zookeeper-process) :int (zh :pointer) (events :int))
@@ -481,7 +569,7 @@
 
 (cffi:defcfun ("zookeeper_close" zookeeper-close) :int (zh :pointer))
 
-(cffi:defcvar ("ZOO_OPEN_ACL_UNSAFE" zoo-open-acl-unsafe) (:struct acl-vector))
+(cffi:defcvar ("ZOO_OPEN_ACL_UNSAFE" zoo-open-acl-unsafe) acl-vector)
 
 (cffi:defcfun ("zoo_acreate" zoo-acreate) :int (zh :pointer) (path :pointer) (value :pointer)
                                                (valuelen :int) (acl :pointer) (flags :int)
@@ -505,6 +593,8 @@
 (cffi:defcfun ("zookeeper_get_connected_host" zookeeper-get-connected-host) :pointer (zh :pointer)
                                                                                      (addr :pointer)
                                                                                      (addr-len :pointer))
+
+(cl:defconstant +zoo-readonly-state+ cl:nil)
 
 (cffi:defcfun ("zerror" zerror) :pointer (c :int))
 
@@ -538,6 +628,8 @@
   (:zoperationtimeout -7)
   (:zbadarguments -8)
   (:zinvalidstate -9)
+  (:znewconfignoquorum -13)
+  (:zreconfiginprogress -14)
   (:zapierror -100)
   (:znonode -101)
   (:znoauth -102)
@@ -551,7 +643,11 @@
   (:zauthfailed -115)
   (:zclosing -116)
   (:znothing -117)
-  (:zsessionmoved -118))
+  (:zsessionmoved -118)
+  (:znotreadonly -119)
+  (:zephemeralonlocalsession -120)
+  (:znowatcher -121)
+  (:zrwserverfound -122))
 
 (cffi:defcfun ("zoo_set_op_init" zoo-set-op-init) :void (op :pointer) (path :pointer)
                                                         (buffer :pointer) (buflen :int)
@@ -591,4 +687,155 @@
 
 (cl:defconstant +zoo-perm-write+ cl:nil)
 
+(cffi:defcfun ("zoo_reconfig" zoo-reconfig) :int (zh :pointer) (joining :pointer) (leaving :pointer)
+                                                 (members :pointer) (version int-64-t)
+                                                 (buffer (:pointer :char))
+                                                 (buffer-len (:pointer :int)) (stat :pointer))
+
 (cl:defconstant +zoo-ephemeral+ cl:nil)
+
+(cffi:defcfun ("zoo_set_log_callback" zoo-set-log-callback) :void (zh :pointer)
+                                                                  (callback log-callback-fn))
+
+(cffi:defcfun ("_ZN13zoo_op_resultaSERKS_" zoo-op-result-operator-=) zoo-op-result (this :pointer)
+                                                                                   (arg1 zoo-op-result))
+
+(cffi:defcfun ("_ZN13zoo_op_resultC1ERKS_" zoo-op-result-constructor) :void (this :pointer)
+                                                                            (arg1 zoo-op-result))
+
+(cl:defun zoo-op-result-new ()
+  (cl:let ((instance (cffi:foreign-alloc 'zoo-op-result)))
+    (zoo-op-result-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN13zoo_op_resultC1Ev" zoo-op-result-constructor) :void (this :pointer))
+
+(cl:defun zoo-op-result-new ()
+  (cl:let ((instance (cffi:foreign-alloc 'zoo-op-result)))
+    (zoo-op-result-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_opaSERKS_" zoo-op-operator-=) zoo-op (this :pointer) (arg1 zoo-op))
+
+(cffi:defcfun ("_ZN6zoo_opC1ERKS_" zoo-op-constructor) :void (this :pointer) (arg1 zoo-op))
+
+(cl:defun zoo-op-new ()
+  (cl:let ((instance (cffi:foreign-alloc 'zoo-op)))
+    (zoo-op-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_opC1Ev" zoo-op-constructor) :void (this :pointer))
+
+(cl:defun zoo-op-new ()
+  (cl:let ((instance (cffi:foreign-alloc 'zoo-op)))
+    (zoo-op-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN10clientid_taSERKS_" clientid-t-operator-=) clientid-t (this :pointer)
+                                                                          (arg1 clientid-t))
+
+(cffi:defcfun ("_ZN10clientid_tC1ERKS_" .-29-constructor) :void (this :pointer) (arg1 clientid-t))
+
+(cl:defun .-29-new ()
+  (cl:let ((instance (cffi:foreign-alloc 'clientid-t)))
+    (.-29-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN10clientid_tC1Ev" .-29-constructor) :void (this :pointer))
+
+(cl:defun .-29-new ()
+  (cl:let ((instance (cffi:foreign-alloc 'clientid-t)))
+    (.-29-constructor instance)
+    instance))
+;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C154DC3}>
+;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C155C43}>
+;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C156B03}>
+;;; Skipping anonymous composite type #<STRUCT <anonymous> {100C157983}>
+
+(cffi:defcfun ("_ZN6zoo_op4._304._31aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C154DC3}>
+ (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C154DC3}>
+))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._31C1ERKS1_" -constructor) :void (this :pointer)
+                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
+                                                                                                      <anonymous>
+                                                                                                      {100C154DC3}>
+))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._31C1Ev" -constructor) :void (this :pointer))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._32aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C155C43}>
+ (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C155C43}>
+))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._32C1ERKS1_" -constructor) :void (this :pointer)
+                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
+                                                                                                      <anonymous>
+                                                                                                      {100C155C43}>
+))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._32C1Ev" -constructor) :void (this :pointer))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._33aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C156B03}>
+ (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C156B03}>
+))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._33C1ERKS1_" -constructor) :void (this :pointer)
+                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
+                                                                                                      <anonymous>
+                                                                                                      {100C156B03}>
+))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._33C1Ev" -constructor) :void (this :pointer))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._34aSERKS1_" -operator-=) ;;; Skipping anonymous type #<STRUCT <anonymous> {100C157983}>
+ (this :pointer) (arg1 ;;; Skipping anonymous type #<STRUCT <anonymous> {100C157983}>
+))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._34C1ERKS1_" -constructor) :void (this :pointer)
+                                                                  (arg1 ;;; Skipping anonymous type #<STRUCT
+                                                                                                      <anonymous>
+                                                                                                      {100C157983}>
+))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
+
+(cffi:defcfun ("_ZN6zoo_op4._304._34C1Ev" -constructor) :void (this :pointer))
+
+(cl:defun -new ()
+  (cl:let ((instance (cffi:foreign-alloc 'nil)))
+    (-constructor instance)
+    instance))
