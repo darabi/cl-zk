@@ -4,10 +4,12 @@
   :license "AL2"
   :description "Zookeeper client"
   :serial t
-  :components ((:file "package")
-               (:file "tyranny")
-               (:file "errors")
-               (:file "conn"))
+  :components ((:module "src"
+                :components
+                ((:file "package")
+                 (:file "tyranny")
+                 (:file "errors")
+                 (:file "conn"))))
   :depends-on (:alexandria
                :cffi
                :flexi-streams
