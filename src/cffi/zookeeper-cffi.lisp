@@ -196,7 +196,7 @@
            "INT-32-T"
            "ZHANDLE-T"))
 
-(cl:in-package :zookeeper-cffi-bindings)
+(cl:in-package :zookeeper-cffi)
 
 (cl:defun vtable-lookup (pobj indx coff)
   (cl:let ((vptr (cffi:mem-ref pobj :pointer coff)))
@@ -208,7 +208,7 @@
 (cffi:defcstruct _zhandle
   )
 
-(cffi::defctype zhandle-t _zhandle)
+(cffi::defctype zhandle-t (:struct _zhandle))
 
 (cffi::defctype int-32-t :int)
 
@@ -218,7 +218,7 @@
 
 (cffi:defcstruct acl
   (perms int-32-t)
-  (id id))
+  (id (:struct id)))
 
 (cffi:defcstruct acl-vector
   (count int-32-t)
@@ -244,9 +244,9 @@
                                                                  (local :int) (completion :pointer)
                                                                  (data :pointer))
 
-(cffi:defcvar ("ZOO_AUTH_IDS" zoo-auth-ids) id)
+(cffi:defcvar ("ZOO_AUTH_IDS" zoo-auth-ids) (:struct id))
 
-(cffi:defcvar ("ZOO_CREATOR_ALL_ACL" zoo-creator-all-acl) acl-vector)
+(cffi:defcvar ("ZOO_CREATOR_ALL_ACL" zoo-creator-all-acl) (:struct acl-vector))
 
 (cl:defconstant +zoo-notwatching-event+ cl:nil)
 
@@ -318,7 +318,7 @@
 
 (cffi::defctype acl-completion-t :pointer)
 
-(cffi:defcvar ("ZOO_READ_ACL_UNSAFE" zoo-read-acl-unsafe) acl-vector)
+(cffi:defcvar ("ZOO_READ_ACL_UNSAFE" zoo-read-acl-unsafe) (:struct acl-vector))
 
 (cffi::defctype strings-completion-t :pointer)
 
@@ -374,7 +374,7 @@
   (_mode :int)
   (_unused-2 :char :count 20))
 
-(cffi::defctype file _io-file)
+(cffi::defctype file (:struct _io-file))
 
 (cffi:defcfun ("zoo_set_log_stream" zoo-set-log-stream) :void (log-stream :pointer))
 
@@ -437,14 +437,40 @@
                                                      (watcher-ctx (:pointer :void))
                                                      (buffer (:pointer :char))
                                                      (buffer-len (:pointer :int)) (stat :pointer))
+
 ;;; Skipping anonymous composite type #<UNION <anonymous> {100BF63613}>
+
+;; START of manual correction
+
+;; TODO: the union inside the zoo-op struct (defined in zookeeper.h)
+;; was not processed correctly by Verrazano. Do we need it?  Two of
+;; the operations (create-op and delete-op) and the union
+;; zoo-operation are declared here, manually:
+
+(cffi:defcstruct create-op
+  (path :pointer)
+  (data :pointer)
+  (datalen :int)
+  (buf :pointer)
+  (buflen :int)
+  (acl (:struct acl-vector))
+  (flags :int))
+
+(cffi:defcstruct delete-op
+  (path :pointer)
+  (version :int))
+
+(cffi:defcunion zoo-operation
+  (create-op (:struct create-op))
+  (delete-op (:struct delete-op)))
 
 (cffi:defcstruct zoo-op
   (type :int)
-  ( ;;; Skipping anonymous type #<UNION <anonymous> {100BF63613}>
-  ))
+  (op (:union zoo-operation)))
 
-(cffi::defctype zoo-op-t zoo-op)
+;; END of manual code
+
+(cffi::defctype zoo-op-t (:struct zoo-op))
 
 (cffi:defcstruct zoo-op-result
   (err :int)
@@ -452,7 +478,7 @@
   (valuelen :int)
   (stat :pointer))
 
-(cffi::defctype zoo-op-result-t zoo-op-result)
+(cffi::defctype zoo-op-result-t (:struct zoo-op-result))
 
 (cffi:defcfun ("zoo_amulti" zoo-amulti) :int (zh :pointer) (count :int) (ops :pointer)
                                              (results :pointer) (arg5 void-completion-t)
@@ -519,7 +545,7 @@
                                                             (watch :int) (strings :pointer)
                                                             (stat :pointer))
 
-(cffi:defcvar ("ZOO_ANYONE_ID_UNSAFE" zoo-anyone-id-unsafe) id)
+(cffi:defcvar ("ZOO_ANYONE_ID_UNSAFE" zoo-anyone-id-unsafe) (:struct id))
 
 (cffi:defcfun ("zoo_agetconfig" zoo-agetconfig) :int (zh :pointer) (watch :int)
                                                      (completion data-completion-t) (data :pointer))
@@ -555,7 +581,7 @@
 
 (cffi:defcfun ("zookeeper_close" zookeeper-close) :int (zh :pointer))
 
-(cffi:defcvar ("ZOO_OPEN_ACL_UNSAFE" zoo-open-acl-unsafe) acl-vector)
+(cffi:defcvar ("ZOO_OPEN_ACL_UNSAFE" zoo-open-acl-unsafe) (:struct acl-vector))
 
 (cffi:defcfun ("zoo_acreate" zoo-acreate) :int (zh :pointer) (path :pointer) (value :pointer)
                                                (valuelen :int) (acl :pointer) (flags :int)
