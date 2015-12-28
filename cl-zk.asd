@@ -6,7 +6,10 @@
   :serial t
   :components ((:module "src"
                 :components
-                ((:file "package")
+                ((:module "cffi"
+                  :components
+                  ((:file "zookeeper-cffi")))
+                 (:file "package")
                  (:file "tyranny")
                  (:file "errors")
                  (:file "conn"))))
