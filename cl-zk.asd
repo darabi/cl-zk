@@ -11,7 +11,6 @@
                   ((:file "zookeeper-cffi")))
                  (:file "package")
                  (:file "tyranny")
-                 (:file "errors")
                  (:file "conn"))))
   :depends-on (:alexandria
                :cffi
