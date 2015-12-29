@@ -196,7 +196,7 @@
            "INT-32-T"
            "ZHANDLE-T"))
 
-(cl:in-package :zookeeper-cffi)
+(cl:in-package :zk-cffi)
 
 (cl:defun vtable-lookup (pobj indx coff)
   (cl:let ((vptr (cffi:mem-ref pobj :pointer coff)))
