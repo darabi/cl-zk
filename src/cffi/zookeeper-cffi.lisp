@@ -356,7 +356,7 @@
 ;;  * This is generated when a client loses contact or reconnects with a server.
 ;;  */
 ;; extern ZOOAPI const int ZOO_SESSION_EVENT;
-;; 
+;;
 ;; /**
 ;;  * \brief a watch has been removed.
 ;;  *
@@ -382,10 +382,47 @@
   (client-id int-64-t)
   (passwd :char :count 16))
 
-(cffi:defcfun ("zookeeper_init2" zookeeper-init-2) :pointer (host :pointer) (fn watcher-fn)
-                                                            (recv-timeout :int) (clientid :pointer)
-                                                            (context (:pointer :void)) (flags :int)
-                                                            (log-callback log-callback-fn))
+(cffi:defcfun ("zookeeper_init2" zookeeper-init-2) :pointer
+  "/**
+ * \brief create a handle to communicate with zookeeper.
+ *
+ * This function is identical to \ref zookeeper_init except it allows one
+ * to specify an additional callback to be used for all logging for that
+ * specific connection. For more details on the logging callback see
+ * \ref zoo_get_log_callback and \ref zoo_set_log_callback.
+ *
+ * This method creates a new handle and a zookeeper session that corresponds
+ * to that handle. Session establishment is asynchronous, meaning that the
+ * session should not be considered established until (and unless) an
+ * event of state ZOO_CONNECTED_STATE is received.
+ * \param host comma separated host:port pairs, each corresponding to a zk
+ *   server. e.g. 127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002
+ * \param fn the global watcher callback function. When notifications are
+ *   triggered this function will be invoked.
+ * \param clientid the id of a previously established session that this
+ *   client will be reconnecting to. Pass 0 if not reconnecting to a previous
+ *   session. Clients can access the session id of an established, valid,
+ *   connection by calling \ref zoo_client_id. If the session corresponding to
+ *   the specified clientid has expired, or if the clientid is invalid for
+ *   any reason, the returned zhandle_t will be invalid -- the zhandle_t
+ *   state will indicate the reason for failure (typically
+ *   ZOO_EXPIRED_SESSION_STATE).
+ * \param context the handback object that will be associated with this instance
+ *   of zhandle_t. Application can access it (for example, in the watcher
+ *   callback) using \ref zoo_get_context. The object is not used by zookeeper
+ *   internally and can be null.
+ * \param flags reserved for future use. Should be set to zero.
+ * \param log_callback All log messages will be passed to this callback function.
+ *   For more details see \ref zoo_get_log_callback and \ref zoo_set_log_callback.
+ * \return a pointer to the opaque zhandle structure. If it fails to create
+ * a new zhandle the function returns NULL and the errno variable
+ * indicates the reason.
+ */
+"
+  (host :string) (fn watcher-fn)
+  (recv-timeout :int) (clientid :pointer)
+  (context (:pointer :void)) (flags :int)
+  (log-callback log-callback-fn))
 
 (cffi::defctype string-completion-t :pointer)
 
@@ -408,18 +445,57 @@
                                                    (buffer (:pointer :char))
                                                    (buffer-len (:pointer :int)) (stat :pointer))
 
-(cffi:defcfun ("zoo_create" zoo-create) :int (zh :pointer) (path :pointer) (value :pointer)
-                                             (valuelen :int) (acl :pointer) (flags :int)
-                                             (path-buffer (:pointer :char)) (path-buffer-len :int))
+(cffi:defcfun ("zoo_create" zoo-create) :int
+  "/**
+ * \brief create a node synchronously.
+ *
+ * This method will create a node in ZooKeeper. A node can only be created if
+ * it does not already exists. The Create Flags affect the creation of nodes.
+ * If ZOO_EPHEMERAL flag is set, the node will automatically get removed if the
+ * client session goes away. If the ZOO_SEQUENCE flag is set, a unique
+ * monotonically increasing sequence number is appended to the path name.
+ *
+ * \param zh the zookeeper handle obtained by a call to \ref zookeeper_init
+ * \param path The name of the node. Expressed as a file name with slashes
+ * separating ancestors of the node.
+ * \param value The data to be stored in the node.
+ * \param valuelen The number of bytes in data. To set the data to be NULL use
+ * value as NULL and valuelen as -1.
+ * \param acl The initial ACL of the node. The ACL must not be null or empty.
+ * \param flags this parameter can be set to 0 for normal create or an OR
+ *    of the Create Flags
+ * \param path_buffer Buffer which will be filled with the path of the
+ *    new node (this might be different than the supplied path
+ *    because of the ZOO_SEQUENCE flag).  The path string will always be
+ *    null-terminated. This parameter may be NULL if path_buffer_len = 0.
+ * \param path_buffer_len Size of path buffer; if the path of the new
+ *    node (including space for the null terminator) exceeds the buffer size,
+ *    the path string will be truncated to fit.  The actual path of the
+ *    new node in the server will not be affected by the truncation.
+ *    The path string will always be null-terminated.
+ * \return  one of the following codes are returned:
+ * ZOK operation completed successfully
+ * ZNONODE the parent node does not exist.
+ * ZNODEEXISTS the node already exists
+ * ZNOAUTH the client does not have permission.
+ * ZNOCHILDRENFOREPHEMERALS cannot create children of ephemeral nodes.
+ * ZBADARGUMENTS - invalid input parameters
+ * ZINVALIDSTATE - zhandle state is either ZOO_SESSION_EXPIRED_STATE or ZOO_AUTH_FAILED_STATE
+ * ZMARSHALLINGERROR - failed to marshall a request; possibly, out of memory
+ */
+"
+  (zh :pointer) (path :string) (value :pointer)
+  (valuelen :int) (acl :pointer) (flags :int)
+  (path-buffer (:pointer :char)) (path-buffer-len :int))
 
-(cffi:defcfun ("zoo_create2" zoo-create-2) :int (zh :pointer) (path :pointer) (value :pointer)
+(cffi:defcfun ("zoo_create2" zoo-create-2) :int (zh :pointer) (path :string) (value :pointer)
                                                 (valuelen :int) (acl :pointer) (flags :int)
                                                 (path-buffer (:pointer :char))
                                                 (path-buffer-len :int) (stat :pointer))
 
 (cffi::defctype stat-completion-t :pointer)
 
-(cffi:defcfun ("zoo_get" zoo-get) :int (zh :pointer) (path :pointer) (watch :int)
+(cffi:defcfun ("zoo_get" zoo-get) :int (zh :pointer) (path :string) (watch :int)
                                        (buffer (:pointer :char)) (buffer-len (:pointer :int))
                                        (stat :pointer))
 
@@ -623,7 +699,7 @@
                                                    (version int-64-t) (dc data-completion-t)
                                                    (data :pointer))
 
-(cffi:defcfun ("zoo_set" zoo-set) :int (zh :pointer) (path :pointer) (buffer :pointer) (buflen :int)
+(cffi:defcfun ("zoo_set" zoo-set) :int (zh :pointer) (path :string) (buffer :pointer) (buflen :int)
                                        (version :int))
 
 (cffi:defcfun ("zoo_awget_children" zoo-awget-children) :int (zh :pointer) (path :pointer)
@@ -684,7 +760,31 @@
 (cffi:defcfun ("zoo_aget_acl" zoo-aget-acl) :int (zh :pointer) (path :pointer)
                                                  (completion acl-completion-t) (data :pointer))
 
-(cffi:defcfun ("zookeeper_close" zookeeper-close) :int (zh :pointer))
+(cffi:defcfun ("zookeeper_close" zookeeper-close) :int
+  "/**
+ * \brief close the zookeeper handle and free up any resources.
+ *
+ * After this call, the client session will no longer be valid. The function
+ * will flush any outstanding send requests before return. As a result it may
+ * block.
+ *
+ * This method should only be called only once on a zookeeper handle. Calling
+ * twice will cause undefined (and probably undesirable behavior). Calling any other
+ * zookeeper method after calling close is undefined behaviour and should be avoided.
+ *
+ * \param zh the zookeeper handle obtained by a call to \ref zookeeper_init
+ * \return a result code. Regardless of the error code returned, the zhandle
+ * will be destroyed and all resources freed.
+ *
+ * ZOK - success
+ * ZBADARGUMENTS - invalid input parameters
+ * ZMARSHALLINGERROR - failed to marshall a request; possibly, out of memory
+ * ZOPERATIONTIMEOUT - failed to flush the buffers within the specified timeout.
+ * ZCONNECTIONLOSS - a network error occured while attempting to send request to server
+ * ZSYSTEMERROR -- a system (OS) error occured; it's worth checking errno to get details
+ */
+"
+  (zh :pointer))
 
 (cffi:defcvar ("ZOO_OPEN_ACL_UNSAFE" zoo-open-acl-unsafe) (:struct acl-vector))
 
@@ -709,14 +809,14 @@
                                                                                      (addr :pointer)
                                                                                      (addr-len :pointer))
 
-(cffi:defcfun ("zerror" zerror) :pointer (c :int))
+(cffi:defcfun ("zerror" zerror) :string (c :int))
 
 (cffi:defcfun ("zoo_wget_children" zoo-wget-children) :int (zh :pointer) (path :pointer)
                                                            (watcher watcher-fn)
                                                            (watcher-ctx (:pointer :void))
                                                            (strings :pointer))
 
-(cffi:defcfun ("zoo_get_children" zoo-get-children) :int (zh :pointer) (path :pointer) (watch :int)
+(cffi:defcfun ("zoo_get_children" zoo-get-children) :int (zh :pointer) (path :string) (watch :int)
                                                          (strings :pointer))
 
 (cffi:defcfun ("zoo_aexists" zoo-aexists) :int (zh :pointer) (path :pointer) (watch :int)
@@ -761,9 +861,39 @@
 (cffi:defcfun ("zoo_set2" zoo-set-2) :int (zh :pointer) (path :pointer) (buffer :pointer)
                                           (buflen :int) (version :int) (stat :pointer))
 
-(cffi:defcfun ("zookeeper_init" zookeeper-init) :pointer (host :pointer) (fn watcher-fn)
-                                                         (recv-timeout :int) (clientid :pointer)
-                                                         (context (:pointer :void)) (flags :int))
+(cffi:defcfun ("zookeeper_init" zookeeper-init) :pointer
+  "/**
+ * \brief create a handle to used communicate with zookeeper.
+ *
+ * This method creates a new handle and a zookeeper session that corresponds
+ * to that handle. Session establishment is asynchronous, meaning that the
+ * session should not be considered established until (and unless) an
+ * event of state ZOO_CONNECTED_STATE is received.
+ * \param host comma separated host:port pairs, each corresponding to a zk
+ *   server. e.g. 127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002
+ * \param fn the global watcher callback function. When notifications are
+ *   triggered this function will be invoked.
+ * \param clientid the id of a previously established session that this
+ *   client will be reconnecting to. Pass 0 if not reconnecting to a previous
+ *   session. Clients can access the session id of an established, valid,
+ *   connection by calling \ref zoo_client_id. If the session corresponding to
+ *   the specified clientid has expired, or if the clientid is invalid for
+ *   any reason, the returned zhandle_t will be invalid -- the zhandle_t
+ *   state will indicate the reason for failure (typically
+ *   ZOO_EXPIRED_SESSION_STATE).
+ * \param context the handback object that will be associated with this instance
+ *   of zhandle_t. Application can access it (for example, in the watcher
+ *   callback) using \ref zoo_get_context. The object is not used by zookeeper
+ *   internally and can be null.
+ * \param flags reserved for future use. Should be set to zero.
+ * \return a pointer to the opaque zhandle structure. If it fails to create
+ * a new zhandle the function returns NULL and the errno variable
+ * indicates the reason.
+ */
+"
+  (host :string) (fn watcher-fn)
+  (recv-timeout :int) (clientid :pointer)
+  (context (:pointer :void)) (flags :int))
 
 (cffi:defcfun ("zoo_check_op_init" zoo-check-op-init) :void (op :pointer) (path :pointer)
                                                             (version :int))
@@ -789,5 +919,19 @@
                                                  (buffer (:pointer :char))
                                                  (buffer-len (:pointer :int)) (stat :pointer))
 
-(cffi:defcfun ("zoo_set_log_callback" zoo-set-log-callback) :void (zh :pointer)
-                                                                  (callback log-callback-fn))
+(cffi:defcfun ("zoo_set_log_callback" zoo-set-log-callback) :void
+  "/**
+ * \brief sets the callback to be used by the library for logging
+ *
+ * Setting this callback has the effect of overriding the default log stream.
+ * Zookeeper will first try to use a per-connection callback if available
+ * and if not, will fallback to using the logging stream. Passing in NULL
+ * resets the callback and will cause it to then fallback to using the logging
+ * stream as described in \ref zoo_set_log_stream.
+ *
+ * Note: The provided callback will be invoked by multiple threads and therefore
+ * it needs to be thread-safe.
+ */
+"
+  (zh :pointer)
+  (callback log-callback-fn))
