@@ -32,6 +32,14 @@
   (cffi:with-foreign-string (buf data)
     (zk-cffi:zoo-set zhandle path buf (+ (length data) 1) version)))
 
+(defun get-children (zhandle path)
+  (cffi:with-foreign-object (sv '(:pointer (:struct zk-cffi:string-vector)))
+    (zk-cffi:zoo-get-children zhandle path 0 sv)
+    (loop with count = (cffi:foreign-slot-value sv '(:struct zk-cffi:string-vector) 'zk-cffi:count)
+          for i from 0 to (1- count)
+          when (> count 0)
+          collect (cffi:mem-aref (cffi:foreign-slot-value sv '(:struct zk-cffi::string-vector) 'zk-cffi:data) :string i))))
+
 (defun exists? (zhandle path watch stat)
   (let* ((exists? (zk-cffi:zoo-exists zhandle path watch stat))
          (exists-kw (cffi:foreign-enum-keyword 'zoo-errors exists?)))
