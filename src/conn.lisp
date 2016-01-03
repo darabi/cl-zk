@@ -18,8 +18,8 @@
   (let ((buf-size 512))
     (cffi:with-foreign-object (buf :char buf-size)
       (with-pointer-to-int (i buf-size)
-        (let* ((get-result (%zoo-get zhandle path watch buf i stat))
-               (get-kw (cffi:foreign-enum-keyword 'zoo-errors get-result)))
+        (let* ((get-result (zk-cffi:zoo-get zhandle path watch buf i stat))
+               (get-kw (cffi:foreign-enum-keyword 'zk-cffi:zoo-errors get-result)))
           (ccase get-kw
             ;; TODO: handle other cases
             (:zok
@@ -30,10 +30,10 @@
 ;; now.
 (defun set-data (zhandle path data &key (version -1))
   (cffi:with-foreign-string (buf data)
-    (%zoo-set zhandle path buf (+ (length data) 1) version)))
+    (zk-cffi:zoo-set zhandle path buf (+ (length data) 1) version)))
 
 (defun exists? (zhandle path watch stat)
-  (let* ((exists? (%zoo-exists zhandle path watch stat))
+  (let* ((exists? (zk-cffi:zoo-exists zhandle path watch stat))
          (exists-kw (cffi:foreign-enum-keyword 'zoo-errors exists?)))
     (ccase exists-kw
       (:zok T)
@@ -49,8 +49,8 @@
                   ;; TODO: Debug^^
                   ;; TODO: This requires a defcallback'd function, not a Lisp function.
                   ;; TODO: Provide a way to pass a proper Lisp function.
-                  (zookeeper-init2 host np timeout clientid np 0 logcallback)
-                  (zookeeper-init host np timeout clientid np 0))))
+                  (zk-cffi:zookeeper-init-2 host np timeout clientid np 0 log-callback)
+                  (zk-cffi:zookeeper-init host np timeout clientid np 0))))
     (if (eq np conn)
         ;; TODO: make this a signal/restart
         (error (format nil "Error creating connection: ~d" *errno*))
