@@ -3,10 +3,7 @@
 ;; TODO: Have the Makefile make install the proper .so file
 ;; TODO: Document how to have this work properly
 (cffi:define-foreign-library zookeeper
-  (:unix
-   (:or "libzookeeper.so"
-        "libzookeeper_mt.so"
-        "libzookeeper_st.so")))
+  (:unix "libzookeeper_st.so"))
 
 (cffi:use-foreign-library zookeeper)
 
